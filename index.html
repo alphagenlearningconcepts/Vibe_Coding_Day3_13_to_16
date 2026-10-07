@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coding Day 3: Build Dynamic Apps with AI</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Google Font: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              purple: '#5E48C4',
+              purpleDark: '#4A3AAD',
+              purpleMid: '#7B6ED4',
+              purplePale: '#EAE7FE',
+              purpleGhost: '#F5F4FF',
+              yellow: '#FFD071',
+              yellowDark: '#E6B84A',
+              yellowPale: '#FFF3CC',
+              black: '#1A1A1A',
+              greyDark: '#404048',
+              greyMid: '#888896',
+              greyLight: '#F2F2F4',
+              cyan: '#59E4FB',
+              cyanDark: '#055F6E',
+              cyanPale: '#E0FAFE',
+              coral: '#ED5661',
+              coralDark: '#993040',
+              coralPale: '#FFF0F1',
+              green: '#AED581',
+            }
+          },
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F5F4FF;
+      color: #1A1A1A;
+      user-select: none;
+    }
+
+    .slide {
+      display: none;
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F2F2F4;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #7B6ED4;
+      border-radius: 8px;
+    }
+
+    @keyframes subtle-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .animate-bounce-subtle {
+      animation: subtle-bounce 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between overflow-hidden bg-brand-purpleGhost text-brand-black">
+
+  <!-- HEADER TOPBAR -->
+  <header class="bg-brand-purple text-white px-6 py-3.5 shadow-md flex justify-between items-center z-20">
+    <div class="flex items-center space-x-3">
+      <div class="bg-brand-yellow text-brand-black font-extrabold rounded-full px-3 py-1 text-xs md:text-sm tracking-wide shadow-sm">
+        ALPHAGEN LEARNING
+      </div>
+      <h1 class="text-lg md:text-xl font-bold tracking-tight text-white hidden sm:block">
+        Vibe Coding: Build Dynamic Apps with AI
+      </h1>
+    </div>
+
+    <!-- Slide Jump Menu & Counter -->
+    <div class="flex items-center space-x-3">
+      <label for="slideSelect" class="text-xs md:text-sm font-semibold hidden md:inline text-brand-purplePale">Jump to:</label>
+      <select id="slideSelect" onchange="goToSlide(parseInt(this.value))" class="bg-white text-brand-purple font-bold text-sm md:text-base px-3 py-1 rounded-xl border-2 border-brand-yellow focus:outline-none shadow-sm cursor-pointer">
+        <option value="1">1. Welcome</option>
+        <option value="2">2. Knowledge Check</option>
+        <option value="3">3. 5-Day Camp Agenda</option>
+        <option value="4">4. Dynamic App & YouTube</option>
+        <option value="5">5. Database & Data Flow</option>
+        <option value="6">6. API Waiter Analogy</option>
+        <option value="7">7. Firebase Config Setup</option>
+        <option value="8">8. App Ideation Worksheet</option>
+        <option value="9">9. Draft Prompt Structure</option>
+        <option value="10">10. Project Review</option>
+        <option value="11">11. Wrap-up & Quiz</option>
+      </select>
+      <span id="slideCounter" class="text-xs md:text-sm font-bold bg-brand-purpleDark px-3 py-1.5 rounded-xl text-brand-yellow border border-brand-purpleMid">
+        1 / 11
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN SLIDE CONTAINER -->
+  <main class="flex-1 relative flex items-center justify-center p-4 md:p-6 overflow-hidden">
+
+    <!-- SLIDE 1: Welcome -->
+    <section class="slide active flex-col items-center justify-center text-center max-w-4xl w-full bg-white rounded-3xl p-8 md:p-14 shadow-xl border-4 border-brand-purplePale relative">
+      <div class="inline-block bg-brand-purplePale text-brand-purple font-extrabold text-xs md:text-sm tracking-widest uppercase px-5 py-2 rounded-full mb-8">
+        ALPHAGEN LEARNING
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold text-brand-black mb-10 leading-tight">
+        Vibe Coding: <br><span class="text-brand-purple">Build Dynamic Apps with AI</span>
+      </h1>
+      <button onclick="nextSlide()" class="bg-brand-yellow hover:bg-brand-yellowDark text-brand-black text-xl md:text-2xl font-bold py-4 px-10 rounded-2xl shadow-lg transform hover:scale-105 transition-all flex items-center gap-3">
+        <span>Start Exploring</span> ➔
+      </button>
+    </section>
+
+    <!-- SLIDE 2: Knowledge Check -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-4">
+        <div class="inline-block bg-brand-purplePale text-brand-purple font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          KNOWLEDGE CHECK
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Let's test your understanding
+        </h2>
+      </div>
+
+      <div class="w-full space-y-4 text-left text-xs">
+        <!-- Question 1 -->
+        <div class="bg-brand-purpleGhost p-4 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-extrabold text-sm text-brand-black mb-2.5">1. What is a static app?</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <button onclick="handleRecapAnswer(this, true)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl font-medium text-left hover:border-brand-purple transition">
+              A web app presenting fixed content that displays identically to all visitors.
+            </button>
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl font-medium text-left hover:border-brand-purple transition">
+              An app requiring dynamic live server data processing for every user.
+            </button>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="bg-brand-purpleGhost p-4 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-extrabold text-sm text-brand-black mb-2.5">2. Which file extension is used for adding client-side interactivity?</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-bold text-center">
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">.html</button>
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">.css</button>
+            <button onclick="handleRecapAnswer(this, true)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">.js</button>
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">.py</button>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="bg-brand-purpleGhost p-4 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-extrabold text-sm text-brand-black mb-2.5">3. What type of server do we use to check output in VS Code?</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 font-bold text-center">
+            <button onclick="handleRecapAnswer(this, true)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">Live Server</button>
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">Node Server</button>
+            <button onclick="handleRecapAnswer(this, false)" class="recap-btn p-3 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">Apache Server</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: 5-Day Camp Agenda -->
+    <section class="slide flex-col items-center max-w-5xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale">
+      <div class="text-center mb-4">
+        <div class="inline-block bg-brand-yellow text-brand-black font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          OUR ROADMAP
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Agenda of the Camp
+        </h2>
+        <p class="text-xs md:text-sm text-brand-greyDark font-medium">
+          Here is our step-by-step path over 5 days:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 w-full my-auto">
+        <!-- Day 1 -->
+        <div class="bg-brand-green border-2 border-brand-purpleMid p-3 rounded-2xl text-center shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-brand-purple text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full uppercase block mb-1">Day 1</span>
+            <h3 class="font-extrabold text-xs md:text-sm text-brand-purple mb-1">Introduction to Vibe Coding</h3>
+            <p class="text-[11px] text-brand-greyDark leading-tight">Get comfortable with vibe coding workflow & prompt engineering.</p>
+          </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="bg-brand-green border-2 border-brand-purpleMid p-3 rounded-2xl text-center shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-brand-purple text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full uppercase block mb-1">Day 2</span>
+            <h3 class="font-extrabold text-xs md:text-sm text-brand-purple mb-1">Build Static App</h3>
+            <p class="text-[11px] text-brand-greyDark leading-tight">Multi-page app with navigation, brand identity, and asset creation.</p>
+          </div>
+        </div>
+
+        <!-- Day 3 ACTIVE -->
+        <div class="bg-brand-yellowPale border-4 border-brand-yellowDark p-3 rounded-2xl text-center shadow-md flex flex-col justify-between transform scale-105">
+          <div>
+            <span class="bg-brand-yellow text-brand-black font-extrabold text-[10px] px-2 py-0.5 rounded-full uppercase block mb-1">Day 3 (Today)</span>
+            <h3 class="font-extrabold text-xs md:text-sm text-brand-black mb-1">Build Dynamic App</h3>
+            <p class="text-[11px] text-brand-greyDark leading-tight">Connect Firebase database. Write and read live data across devices.</p>
+          </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-3 rounded-2xl text-center shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-brand-purple text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full uppercase block mb-1">Day 4</span>
+            <h3 class="font-extrabold text-xs md:text-sm text-brand-purple mb-1">GitHub & Repositories</h3>
+            <p class="text-[11px] text-brand-greyDark leading-tight">Learn version control, upload code, and publish live on Vercel/Netlify.</p>
+          </div>
+        </div>
+
+        <!-- Day 5 -->
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-3 rounded-2xl text-center shadow-sm flex flex-col justify-between">
+          <div>
+            <span class="bg-brand-purple text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full uppercase block mb-1">Day 5</span>
+            <h3 class="font-extrabold text-xs md:text-sm text-brand-purple mb-1">Portfolio Showcase</h3>
+            <p class="text-[11px] text-brand-greyDark leading-tight">Build personal showcase portfolio and present your favorite app!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Dynamic App & YouTube Experiment -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-cyanPale text-brand-cyanDark font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          CONCEPT EXPLORATION
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Dynamic Apps & YouTube Experiment
+        </h2>
+      </div>
+
+      <div class="w-full space-y-3 text-xs md:text-sm">
+        <!-- Experiment Card -->
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-4 rounded-2xl">
+          <h3 class="font-extrabold text-brand-purple mb-1"> Try This Experiment:</h3>
+          <p class="text-brand-greyDark font-medium mb-3">
+            Go to <a href="https://www.youtube.com" target="_blank" class="text-brand-purple underline font-bold">YouTube.com</a>, refresh the homepage 2-3 times, and observe what happens to the recommended videos. Then come back here and answer below!
+          </p>
+        </div>
+
+        <!-- Question Card -->
+        <div class="bg-brand-yellowPale border-2 border-brand-yellowDark p-4 rounded-2xl">
+          <p class="font-extrabold text-brand-black mb-3">What did you observe on the homepage after refreshing?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="handleYoutubeQuiz(false)" class="p-3 bg-white border border-brand-greyMid rounded-xl font-medium text-left hover:border-brand-purple transition">
+              A. The content remained exactly the same every time.
+            </button>
+            <button onclick="handleYoutubeQuiz(true)" id="ytCorrectBtn" class="p-3 bg-white border border-brand-greyMid rounded-xl font-medium text-left hover:border-brand-purple transition">
+              B. The content kept on changing based on feeds.
+            </button>
+          </div>
+          <div id="ytFeedback" class="hidden mt-3 p-3 bg-white border-2 border-brand-purple rounded-xl text-xs">
+            <p class="font-bold text-brand-purple mb-1">✨ Why did this happen?</p>
+            <p class="text-brand-greyDark font-medium">
+              The content kept on changing because there was a backend reading your behavior and suggesting personalized content! This is a <strong>dynamic application</strong> where data changes dynamically and is managed through a backend database.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Database & Visualizing Data Flow (Interactive) -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-purplePale text-brand-purple font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          DATABASE & FIREBASE
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          What is a Database ?
+        </h2>
+      </div>
+
+      <div class="w-full space-y-4 text-xs md:text-sm">
+        <!-- Interactive Database Builder -->
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-4 rounded-2xl">
+          <h3 class="font-extrabold text-brand-purple mb-2">📦 Interactive: What is a Database?</h3>
+          <p class="text-brand-greyDark font-medium mb-3">Click each data item below to store it in the Cloud Database box:</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+            <div class="space-y-2">
+              <div onclick="addDbItem(this, 'User Profile')" class="db-item cursor-pointer p-2 bg-white border border-brand-purpleMid rounded-xl font-bold text-brand-purple hover:bg-brand-purplePale transition shadow-sm">
+                📁 User Profile Data [ Click to Store]
+              </div>
+              <div onclick="addDbItem(this, 'Blog Post')" class="db-item cursor-pointer p-2 bg-white border border-brand-purpleMid rounded-xl font-bold text-brand-purple hover:bg-brand-purplePale transition shadow-sm">
+                📝 Blog Post Content [ Click to Store]
+              </div>
+              <div onclick="addDbItem(this, 'Comments')" class="db-item cursor-pointer p-2 bg-white border border-brand-purpleMid rounded-xl font-bold text-brand-purple hover:bg-brand-purplePale transition shadow-sm">
+                💬 User Comments [ Click to Store]
+              </div>
+            </div>
+
+            <!-- Cloud Database Box -->
+            <div id="cloudStorageBox" class="bg-white border-2 border-dashed border-brand-purple p-3 rounded-2xl text-center min-h-[110px] flex flex-col justify-center items-center">
+              <span class="text-2xl mb-1">☁️</span>
+              <h4 class="font-extrabold text-brand-purple text-xs">Cloud Database Box</h4>
+              <div id="storedItemsList" class="text-[11px] text-brand-greyDark font-medium mt-1">Stored items: 0 / 3</div>
+            </div>
+          </div>
+
+          <!-- One-line Definition Reveal -->
+          <div id="dbDefinitionReveal" class="hidden mt-3 p-3 bg-brand-yellowPale border-2 border-brand-yellowDark rounded-xl text-xs font-bold text-brand-black text-center animate-bounce-subtle">
+            💡 Definition: A database is a structured digital storage system used to persistently save, update, and retrieve live user records across sessions.
+          </div>
+        </div>
+
+        <!-- Interactive Blog Form Data Flow -->
+        <div class="bg-brand-yellowPale border-2 border-brand-yellowDark p-4 rounded-2xl text-center">
+          <h3 class="font-extrabold text-brand-black mb-2">Interactive Data Flow</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center text-xs">
+            <!-- Form Input -->
+            <div class="bg-white p-3 rounded-xl border border-brand-yellowDark shadow-sm text-left space-y-2">
+              <span class="font-bold text-brand-purple block">📝 1. Submit Blog Post</span>
+              <input type="text" id="blogTitleInput" placeholder="Enter title (e.g. My Trip)..." class="w-full p-1.5 border rounded text-[11px] focus:outline-none">
+              <input type="text" id="blogContentInput" placeholder="Enter content..." class="w-full p-1.5 border rounded text-[11px] focus:outline-none">
+              <button onclick="submitBlogPost()" class="w-full bg-brand-yellow hover:bg-brand-yellowDark text-brand-black font-bold py-1.5 rounded text-[11px] shadow">
+                Submit Post 🚀
+              </button>
+            </div>
+
+            <!-- Database Sync -->
+            <div class="flex flex-col items-center justify-center">
+              <span class="text-2xl font-bold text-brand-purple animate-bounce-subtle">➔ 🗄️ ➔</span>
+              <span class="text-[10px] font-extrabold text-brand-purple uppercase">Cloud Database Sync</span>
+            </div>
+
+            <!-- Live Homepage Preview -->
+            <div class="bg-white p-3 rounded-xl border border-brand-yellowDark shadow-sm text-left">
+              <span class="font-bold text-brand-black block mb-1">📡 2. Live Homepage Feed</span>
+              <div id="liveHomepageFeed" class="bg-brand-purpleGhost p-2.5 rounded-xl text-[11px] space-y-1 min-h-[70px] border border-brand-purpleMid">
+                <span class="text-brand-greyDark italic">[ No posts submitted yet ]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: API Real-Life Analogy (Interactive Animation) -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-cyanPale text-brand-cyanDark font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          API CONCEPT
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          The API (Application Programming Interface)
+        </h2>
+      </div>
+
+      <div class="w-full space-y-4 text-xs md:text-sm">
+        <!-- Interactive Analogy Stage -->
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-4 rounded-2xl text-center">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center">
+            
+            <!-- Customer -->
+            <div class="bg-white p-3 rounded-xl border border-brand-purple shadow-sm">
+              <span class="text-3xl">🧑‍🍳</span>
+              <h4 class="font-bold text-brand-purple mt-1">Customer / User</h4>
+              <textarea id="apiOrderInput" rows="2" placeholder="Enter food order..." class="w-full mt-2 p-1.5 text-[11px] border rounded-lg bg-brand-purpleGhost focus:outline-none"></textarea>
+              <button onclick="triggerApiRequest()" class="mt-2 w-full bg-brand-yellow hover:bg-brand-yellowDark text-brand-black font-bold py-1.5 px-3 rounded-lg shadow text-[11px] transition">
+                Place Order 🛎️
+              </button>
+            </div>
+
+            <!-- Waiter / Tracker -->
+            <div class="flex flex-col items-center justify-center p-2">
+              <span id="waiterEmoji" class="text-4xl transition-all duration-500 transform">🏃‍♂️</span>
+              <h4 id="apiStatusText" class="font-extrabold text-brand-black mt-2">Waiter (API) Ready</h4>
+              <p id="apiTrackingMsg" class="text-[10px] text-brand-greyDark mt-1">Waiting for order...</p>
+            </div>
+
+            <!-- Kitchen -->
+            <div class="bg-white p-3 rounded-xl border border-brand-purple shadow-sm">
+              <span class="text-3xl">🏠</span>
+              <h4 class="font-bold text-brand-purple mt-1">Kitchen (Database)</h4>
+              <div id="kitchenOrderDisplay" class="mt-2 p-2 bg-brand-yellowPale rounded-lg text-[11px] font-medium text-brand-black min-h-[40px] flex items-center justify-center border border-brand-yellowDark">
+                [ Kitchen Idle ]
+              </div>
+              <button onclick="triggerApiResponse()" class="mt-2 w-full bg-brand-purple hover:bg-brand-purpleDark text-white font-bold py-1.5 px-3 rounded-lg shadow text-[11px] transition">
+                Food Ready! (Click) 🍲
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Explanation Footer -->
+        <div class="bg-white border-2 border-brand-purple p-3 rounded-2xl text-xs">
+          <p class="font-extrabold text-brand-black">💡 How this represents an API:</p>
+          <p class="text-brand-greyDark font-medium mt-0.5">
+            When you click <strong>Place Order</strong>, the waiter moves to the kitchen. Once processed, clicking <strong>Food Ready</strong> causes the waiter to move back to the Customer (Response) to serve your app!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Firebase Config Setup -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-yellow text-brand-black font-extrabold text-xs tracking-widest uppercase px-3 py-1 rounded-full mb-1">
+          FIREBASE SETUP
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Creating Firebase Config Key
+        </h2>
+      </div>
+
+      <div class="w-full space-y-4 text-xs md:text-sm">
+        <div class="bg-brand-purpleGhost border-2 border-brand-purpleMid p-4 rounded-2xl space-y-2">
+          <h3 class="font-extrabold text-brand-purple">🔥 Why do we need Firebase Config?</h3>
+          <p class="text-brand-greyDark font-medium">
+            To build a dynamic app, we generate an API key and configuration object in Firebase Console so our app securely connects to the cloud database.
+          </p>
+        </div>
+
+        <!-- Prompt example snippet box -->
+        <div class="bg-brand-yellowPale border-2 border-brand-yellowDark p-4 rounded-2xl space-y-2">
+          <h3 class="font-extrabold text-brand-black"> Sample Prompt to Generate API Config Placeholder:</h3>
+          <div class="bg-white p-3 rounded-xl border border-brand-yellowDark font-mono text-[11px] text-brand-purple">
+            "Act as a Firebase expert. Generate the standard firebaseConfig JavaScript code snippet with placeholders for apiKey, authDomain, and projectId."
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: Day 3 App Ideation Worksheet -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-cyanPale text-brand-cyanDark font-extrabold text-xs tracking-widest uppercase px-3 py-1 rounded-full mb-1">
+          IDEATION WORKSHEET
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Day 3 App Ideation Worksheet
+        </h2>
+        <p class="text-xs text-brand-greyDark font-medium">
+          Plan your dynamic application before prompting:
+        </p>
+      </div>
+
+      <div class="w-full space-y-3 text-xs md:text-sm">
+        <!-- Skip Note -->
+        <div class="bg-brand-yellowPale border-2 border-brand-yellowDark p-3 rounded-2xl text-[11px] font-bold text-brand-black text-center">
+          💡 Note: If it's the same app from Day 2 that you are extending upon as a dynamic app, you can skip this page!
+        </div>
+
+        <div class="bg-brand-purpleGhost p-3.5 rounded-2xl border-2 border-brand-purpleMid">
+          <label class="block font-bold text-brand-purple mb-1">1. What is the name of your app and its functionality?</label>
+          <input type="text" placeholder="e.g. TravelFeed - Live traveler story sharing app" class="w-full p-2.5 rounded-xl border border-brand-purpleMid text-xs font-medium focus:outline-none bg-white">
+        </div>
+
+        <div class="bg-brand-purpleGhost p-3.5 rounded-2xl border-2 border-brand-purpleMid">
+          <label class="block font-bold text-brand-purple mb-1">2. How many pages does your app have?</label>
+          <input type="text" placeholder="e.g. 2 pages (index.html, submit.html)" class="w-full p-2.5 rounded-xl border border-brand-purpleMid text-xs font-medium focus:outline-none bg-white">
+        </div>
+
+        <div class="bg-brand-purpleGhost p-3.5 rounded-2xl border-2 border-brand-purpleMid">
+          <label class="block font-bold text-brand-purple mb-1">3. What is the color or theme that you are choosing?</label>
+          <input type="text" placeholder="e.g. Ocean blue and bright yellow theme" class="w-full p-2.5 rounded-xl border border-brand-purpleMid text-xs font-medium focus:outline-none bg-white">
+        </div>
+
+        <div class="bg-brand-purpleGhost p-3.5 rounded-2xl border-2 border-brand-purpleMid">
+          <label class="block font-bold text-brand-purple mb-1">4. What is the dynamic functionality that you are adding?</label>
+          <input type="text" placeholder="e.g. Users submit posts stored in Firestore database and viewed live" class="w-full p-2.5 rounded-xl border border-brand-purpleMid text-xs font-medium focus:outline-none bg-white">
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Draft Prompt Structure for Day 3 -->
+    <section class="slide flex-col items-center max-w-5xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-yellow text-brand-black font-extrabold text-xs tracking-widest uppercase px-3 py-1 rounded-full mb-1">
+          PROMPT ENGINEERING
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Draft Prompt Structure for Day 3 
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full text-xs">
+        <!-- LEFT COLUMN: Checklist -->
+        <div class="md:col-span-5 bg-brand-purpleGhost p-4 rounded-2xl border-2 border-brand-purpleMid flex flex-col justify-between">
+          <div>
+            <h3 class="font-extrabold text-brand-purple text-sm mb-2">Day 3 Prompt Checklist:</h3>
+            <ul class="space-y-2 font-medium">
+              <li id="chk-persona" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                👤 <strong>Role / Persona:</strong> e.g. "Act as a Full-Stack AI Developer"
+              </li>
+              <li id="chk-tech" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                🌐 <strong>Target Language & Tech:</strong> HTML, Tailwind CSS, JS
+              </li>
+              <li id="chk-pages" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                📂 <strong>Number of Pages:</strong> e.g. 2 pages (index.html, submit.html)
+              </li>
+              <li id="chk-firebase" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                🔥 <strong>Firebase Config & API:</strong> firebaseConfig placeholder & SDK
+              </li>
+              <li id="chk-responsive" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                📱 <strong>Responsiveness:</strong> Mobile & Desktop adaptable
+              </li>
+              <li id="chk-database" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                🗄️ <strong>Database & Submit:</strong> Firestore write & read live data
+              </li>
+              <li id="chk-assets" class="p-2 rounded-xl bg-white border border-gray-300 transition text-gray-600">
+                🖼️ <strong>Assets & Placeholders:</strong> Image placeholders & logo
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Textarea & Check Button -->
+        <div class="md:col-span-7 flex flex-col justify-between space-y-3">
+          <div class="bg-brand-purpleGhost p-4 rounded-2xl border-2 border-brand-purpleMid flex-1 flex flex-col">
+            <label for="day3PromptArea" class="block font-extrabold text-brand-purple uppercase mb-2">Write Your Day 3 Prompt:</label>
+            <textarea id="day3PromptArea" oninput="liveCheckDay3Prompt()" rows="7" placeholder="Act as a Full-Stack AI Developer. Build a 2-page dynamic web app using HTML, Tailwind CSS, and JavaScript. Include firebaseConfig API placeholder, form input to submit data, and real-time Firestore database fetching..." class="w-full p-3 rounded-xl border border-brand-purpleMid text-xs font-medium focus:outline-none bg-white text-brand-black resize-none flex-1"></textarea>
+          </div>
+
+          <button onclick="checkDay3PromptQuality()" class="w-full bg-brand-purple hover:bg-brand-purpleDark text-white font-bold py-3 rounded-xl shadow transition text-xs md:text-sm flex items-center justify-center gap-2">
+            <span>Check Prompt Quality ✨</span>
+          </button>
+
+          <div id="day3PromptFeedback" class="hidden p-3 rounded-xl bg-white border-2 border-brand-purple text-xs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Project Review & Checklist -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-4">
+        <div class="inline-block bg-brand-cyanPale text-brand-cyanDark font-extrabold text-xs tracking-widest uppercase px-4 py-1 rounded-full mb-1">
+          PROJECT REVIEW
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Development Checklist & Export
+        </h2>
+        <p class="text-xs md:text-sm text-brand-greyDark font-medium">
+          Check off your completed milestones for Day 3:
+        </p>
+      </div>
+
+      <div class="w-full space-y-3 text-xs md:text-sm">
+        <label class="flex items-center space-x-3 p-3.5 bg-brand-purpleGhost rounded-2xl border-2 border-brand-purpleMid cursor-pointer hover:border-brand-purple transition">
+          <input type="checkbox" class="w-5 h-5 accent-brand-purple rounded" onchange="playTone(600, 'sine', 0.1)">
+          <span class="font-bold text-brand-black">Did you create a fully functional dynamic web app?</span>
+        </label>
+
+        <label class="flex items-center space-x-3 p-3.5 bg-brand-purpleGhost rounded-2xl border-2 border-brand-purpleMid cursor-pointer hover:border-brand-purple transition">
+          <input type="checkbox" class="w-5 h-5 accent-brand-purple rounded" onchange="playTone(600, 'sine', 0.1)">
+          <span class="font-bold text-brand-black">Did you successfully connect it to Firebase backend database?</span>
+        </label>
+
+        <label class="flex items-center space-x-3 p-3.5 bg-brand-purpleGhost rounded-2xl border-2 border-brand-purpleMid cursor-pointer hover:border-brand-purple transition">
+          <input type="checkbox" class="w-5 h-5 accent-brand-purple rounded" onchange="playTone(600, 'sine', 0.1)">
+          <span class="font-bold text-brand-black">Did you see user data getting reflected live into the database?</span>
+        </label>
+
+        <label class="flex items-center space-x-3 p-3.5 bg-brand-purpleGhost rounded-2xl border-2 border-brand-purpleMid cursor-pointer hover:border-brand-purple transition">
+          <input type="checkbox" class="w-5 h-5 accent-brand-purple rounded" onchange="playTone(600, 'sine', 0.1)">
+          <span class="font-bold text-brand-black">Did you export or save your code and data into a single file?</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- SLIDE 11: Day 3 Wrap-Up & Knowledge Check -->
+    <section class="slide flex-col items-center max-w-4xl w-full bg-white rounded-3xl p-5 md:p-7 shadow-xl border-4 border-brand-purplePale overflow-y-auto max-h-full">
+      <div class="text-center mb-3">
+        <div class="inline-block bg-brand-yellow text-brand-black font-extrabold text-xs tracking-widest uppercase px-3 py-1 rounded-full mb-1">
+          WRAP-UP
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-brand-purple">
+          Day 3 Wrap-Up Quiz 🏆
+        </h2>
+        <p class="text-xs text-brand-greyDark font-medium">
+          Answer all questions to complete Day 3:
+        </p>
+      </div>
+
+      <div class="w-full space-y-3 text-left mb-3 text-xs">
+        <!-- Q1 -->
+        <div class="bg-brand-purpleGhost p-3 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-bold text-brand-black mb-2">1. What is a database and why is it needed for a dynamic app?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button onclick="handleFinalQuiz(this, true)" class="fq-btn p-2.5 bg-white border border-brand-greyMid rounded-xl font-medium hover:border-brand-purple transition">
+              A structured storage system required to persistently save, update, and retrieve live user data across sessions.
+            </button>
+            <button onclick="handleFinalQuiz(this, false)" class="fq-btn p-2.5 bg-white border border-brand-greyMid rounded-xl font-medium hover:border-brand-purple transition">
+              It is a graphic design folder used exclusively to store banner pictures.
+            </button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="bg-brand-purpleGhost p-3 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-bold text-brand-black mb-2">2. Under which variable name did the Firebase API configuration get created?</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-bold">
+            <button onclick="handleFinalQuiz(this, false)" class="fq-btn p-2 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">apiKeyData</button>
+            <button onclick="handleFinalQuiz(this, true)" class="fq-btn p-2 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">firebaseConfig</button>
+            <button onclick="handleFinalQuiz(this, false)" class="fq-btn p-2 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">dbInstance</button>
+            <button onclick="handleFinalQuiz(this, false)" class="fq-btn p-2 bg-white border border-brand-greyMid rounded-xl hover:border-brand-purple transition">cloudKey</button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="bg-brand-purpleGhost p-3 rounded-2xl border-2 border-brand-purpleMid">
+          <p class="font-bold text-brand-black mb-2">3. What are the two essential steps needed for an API call?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button onclick="handleFinalQuiz(this, true)" class="fq-btn p-2.5 bg-white border border-brand-greyMid rounded-xl font-medium hover:border-brand-purple transition">
+              Request and Response
+            </button>
+            <button onclick="handleFinalQuiz(this, false)" class="fq-btn p-2.5 bg-white border border-brand-greyMid rounded-xl font-medium hover:border-brand-purple transition">
+              Compile and Debug
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- In-Place Victory Banner -->
+      <div id="victoryBanner" class="hidden w-full bg-brand-yellow p-4 rounded-2xl text-center shadow-lg border-2 border-brand-yellowDark animate-bounce-subtle">
+        <h3 class="text-lg md:text-xl font-extrabold text-brand-black mb-1">
+          🎉 Day 3 Complete!
+        </h3>
+       
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER NAVIGATION -->
+  <footer class="bg-white border-t-2 border-brand-purplePale px-6 py-3.5 flex justify-between items-center z-20 shadow-lg">
+    <button id="prevBtn" onclick="prevSlide()" class="bg-brand-purpleGhost hover:bg-brand-purplePale text-brand-purple font-extrabold px-5 py-2.5 rounded-2xl transition border-2 border-brand-purpleMid disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 text-sm md:text-base">
+      ⬅️ Previous
+    </button>
+
+    <div class="hidden md:flex items-center space-x-2" id="dotContainer"></div>
+
+    <button id="nextBtn" onclick="nextSlide()" class="bg-brand-yellow hover:bg-brand-yellowDark text-brand-black font-extrabold px-5 py-2.5 rounded-2xl transition shadow-md flex items-center gap-2 text-sm md:text-base">
+      Next ➡️
+    </button>
+  </footer>
+
+  <!-- AUDIO SYNTHESIZER & INTERACTIVE LOGIC JS -->
+  <script>
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.15) {
+      initAudio();
+      if (!audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.value = freq;
+
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function playCorrectSound() {
+      playTone(523.25, 'triangle', 0.1);
+      setTimeout(() => playTone(659.25, 'triangle', 0.15), 100);
+      setTimeout(() => playTone(783.99, 'triangle', 0.2), 200);
+    }
+
+    function playWrongSound() {
+      playTone(220, 'sawtooth', 0.15);
+      setTimeout(() => playTone(180, 'sawtooth', 0.2), 120);
+    }
+
+    // Navigation State
+    let currentSlide = 1;
+    const totalSlides = 11;
+
+    function renderDots() {
+      const container = document.getElementById('dotContainer');
+      container.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = `w-2.5 h-2.5 rounded-full cursor-pointer transition-all ${i === currentSlide ? 'bg-brand-purple w-5' : 'bg-brand-greyMid opacity-50'}`;
+        dot.onclick = () => goToSlide(i);
+        container.appendChild(dot);
+      }
+    }
+
+    function updateSlideDisplay() {
+      document.querySelectorAll('.slide').forEach((slide, idx) => {
+        if (idx + 1 === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      document.getElementById('slideCounter').innerText = `${currentSlide} / ${totalSlides}`;
+      document.getElementById('slideSelect').value = currentSlide;
+
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      if (currentSlide === totalSlides) {
+        document.getElementById('nextBtn').innerText = 'Finish 🏆';
+      } else {
+        document.getElementById('nextBtn').innerText = 'Next ➡️';
+      }
+
+      renderDots();
+    }
+
+    function goToSlide(n) {
+      if (n >= 1 && n <= totalSlides) {
+        currentSlide = n;
+        updateSlideDisplay();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide === totalSlides) {
+        triggerFinishCelebration();
+      } else if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlideDisplay();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlideDisplay();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Slide 2 Quiz Handler
+    function handleRecapAnswer(btn, isCorrect) {
+      if (isCorrect) {
+        playCorrectSound();
+        btn.classList.remove('bg-white', 'border-brand-greyMid');
+        btn.classList.add('bg-green-500', 'text-white', 'border-green-600', 'font-bold');
+      } else {
+        playWrongSound();
+        btn.classList.remove('bg-white', 'border-brand-greyMid');
+        btn.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+      }
+    }
+
+    // Slide 4 YouTube Quiz Handler
+    function handleYoutubeQuiz(isCorrect) {
+      const fb = document.getElementById('ytFeedback');
+      const btn = document.getElementById('ytCorrectBtn');
+      fb.classList.remove('hidden');
+      if (isCorrect) {
+        playCorrectSound();
+        btn.classList.add('bg-green-500', 'text-white', 'border-green-600', 'font-bold');
+      } else {
+        playWrongSound();
+      }
+    }
+
+    // Slide 5 Database Interactive Simulation State
+    let storedDbCount = 0;
+    const storedItems = new Set();
+    function addDbItem(el, name) {
+      if (storedItems.has(name)) return;
+      playCorrectSound();
+      storedItems.add(name);
+      storedDbCount++;
+      el.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+      el.innerText = `✔️ Stored: ${name}`;
+      
+      document.getElementById('storedItemsList').innerText = `Stored items: ${storedDbCount} / 3`;
+      if (storedDbCount === 3) {
+        document.getElementById('dbDefinitionReveal').classList.remove('hidden');
+      }
+    }
+
+    // Slide 5 Blog Form Submission
+    function submitBlogPost() {
+      const title = document.getElementById('blogTitleInput').value.trim();
+      const content = document.getElementById('blogContentInput').value.trim();
+      const feed = document.getElementById('liveHomepageFeed');
+
+      if (!title || !content) {
+        playWrongSound();
+        alert('Please enter both title and content!');
+        return;
+      }
+
+      playCorrectSound();
+      if (feed.querySelector('span')) {
+        feed.innerHTML = '';
+      }
+
+      const postCard = document.createElement('div');
+      postCard.className = 'bg-white p-2 rounded border border-brand-yellowDark shadow-sm';
+      postCard.innerHTML = `<strong class="text-brand-purple">✨ ${title}</strong><p class="text-[10px] text-brand-greyDark">${content} (Synced live via Cloud Database)</p>`;
+      feed.prepend(postCard);
+
+      document.getElementById('blogTitleInput').value = '';
+      document.getElementById('blogContentInput').value = '';
+    }
+
+    // Slide 6 API Waiter/Kitchen Animation Handlers
+    function triggerApiRequest() {
+      playTone(450, 'sine', 0.15);
+      const waiter = document.getElementById('waiterEmoji');
+      const statusText = document.getElementById('apiStatusText');
+      const trackingMsg = document.getElementById('apiTrackingMsg');
+      const kitchenDisplay = document.getElementById('kitchenOrderDisplay');
+
+      waiter.style.transform = 'translateX(60px) scale(1.1)';
+      statusText.innerText = "Waiter Request ➔ Kitchen";
+      trackingMsg.innerText = "Sending Request...";
+
+      setTimeout(() => {
+        kitchenDisplay.innerText = "🍳 Order Received in Kitchen!";
+        statusText.innerText = "Waiter Waiting in Kitchen";
+      }, 500);
+    }
+
+    function triggerApiResponse() {
+      playCorrectSound();
+      const waiter = document.getElementById('waiterEmoji');
+      const statusText = document.getElementById('apiStatusText');
+      const trackingMsg = document.getElementById('apiTrackingMsg');
+      const kitchenDisplay = document.getElementById('kitchenOrderDisplay');
+
+      waiter.style.transform = 'translateX(0px) scale(1.1)';
+      statusText.innerText = "Response ⬅️ Food Delivered!";
+      trackingMsg.innerText = "Response Received!";
+      kitchenDisplay.innerText = "[ Kitchen Ready ]";
+
+      setTimeout(() => {
+        statusText.innerText = "Waiter (API) Ready";
+      }, 500);
+    }
+
+    // Slide 9 Live Prompt Detector
+    function liveCheckDay3Prompt() {
+      const text = document.getElementById('day3PromptArea').value.toLowerCase();
+
+      const chkPersona = document.getElementById('chk-persona');
+      const chkTech = document.getElementById('chk-tech');
+      const chkPages = document.getElementById('chk-pages');
+      const chkFirebase = document.getElementById('chk-firebase');
+      const chkResponsive = document.getElementById('chk-responsive');
+      const chkDatabase = document.getElementById('chk-database');
+      const chkAssets = document.getElementById('chk-assets');
+
+      if (text.includes('act as') || text.includes('developer') || text.includes('expert')) {
+        chkPersona.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkPersona.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('html') || text.includes('tailwind') || text.includes('javascript')) {
+        chkTech.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkTech.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('page') || text.includes('index.html')) {
+        chkPages.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkPages.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('firebaseconfig') || text.includes('firebase') || text.includes('api key')) {
+        chkFirebase.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkFirebase.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('responsive') || text.includes('mobile') || text.includes('desktop')) {
+        chkResponsive.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkResponsive.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('database') || text.includes('firestore') || text.includes('submit')) {
+        chkDatabase.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkDatabase.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+
+      if (text.includes('placeholder') || text.includes('image') || text.includes('logo')) {
+        chkAssets.className = 'p-2 rounded-xl bg-green-100 border border-green-400 text-green-900 font-bold';
+      } else {
+        chkAssets.className = 'p-2 rounded-xl bg-white border border-gray-300 text-gray-600 font-medium';
+      }
+    }
+
+    function checkDay3PromptQuality() {
+      const text = document.getElementById('day3PromptArea').value.trim();
+      const fb = document.getElementById('day3PromptFeedback');
+      fb.classList.remove('hidden');
+
+      if (text.length < 30) {
+        playWrongSound();
+        fb.innerHTML = `<span class="font-bold text-red-600">⚠️ Prompt is too short!</span> Please include role, Firebase config, database, and submit logic.`;
+        return;
+      }
+
+      playCorrectSound();
+      fb.innerHTML = `
+        <div class="font-extrabold text-brand-purple mb-1">🎉 Prompt Quality Analysis Complete!</div>
+        <p class="text-brand-black font-medium leading-relaxed">
+          Your prompt contains <strong>${text.length} characters</strong>. Verify that all checklist items on the left are green!
+        </p>
+      `;
+    }
+
+    // Slide 11 Final Quiz Handler
+    function handleFinalQuiz(btn, isCorrect) {
+      if (isCorrect) {
+        playCorrectSound();
+        btn.classList.remove('bg-white', 'border-brand-greyMid');
+        btn.classList.add('bg-green-500', 'text-white', 'border-green-600', 'font-bold');
+      } else {
+        playWrongSound();
+        btn.classList.remove('bg-white', 'border-brand-greyMid');
+        btn.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
+      }
+    }
+
+    function triggerFinishCelebration() {
+      playTone(523.25, 'triangle', 0.15);
+      setTimeout(() => playTone(659.25, 'triangle', 0.15), 150);
+      setTimeout(() => playTone(783.99, 'triangle', 0.15), 300);
+      setTimeout(() => playTone(1046.50, 'triangle', 0.4), 450);
+
+      const victory = document.getElementById('victoryBanner');
+      if (victory) victory.classList.remove('hidden');
+
+      confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+    }
+
+    updateSlideDisplay();
+  </script>
+</body>
+</html>
